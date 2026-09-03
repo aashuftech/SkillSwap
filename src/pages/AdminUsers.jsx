@@ -209,43 +209,43 @@ export default function AdminUsers() {
 
         {/* Top Metric Cards */}
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div className="rounded-2xl border border-violet-100 bg-white p-4.5 shadow-xs">
-            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-gray-500">
-              <Users size={15} className="text-violet-600" /> Total Users
+          <div className="rounded-2xl border border-violet-100 dark:border-gray-800 bg-white dark:bg-[#181824] p-4.5 shadow-xs">
+            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <Users size={15} className="text-violet-600 dark:text-violet-400" /> Total Users
             </div>
-            <p className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl">{users.length}</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">{users.length}</p>
           </div>
-          <div className="rounded-2xl border border-emerald-100 bg-white p-4.5 shadow-xs">
-            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-emerald-600">
+          <div className="rounded-2xl border border-emerald-100 dark:border-emerald-900/40 bg-white dark:bg-[#181824] p-4.5 shadow-xs">
+            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
               <UserCheck size={15} /> Active Members
             </div>
-            <p className="mt-2 text-2xl font-bold text-emerald-700 sm:text-3xl">{activeCount}</p>
+            <p className="mt-2 text-2xl font-bold text-emerald-700 dark:text-emerald-400 sm:text-3xl">{activeCount}</p>
           </div>
-          <div className="rounded-2xl border border-red-100 bg-white p-4.5 shadow-xs">
-            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-red-600">
+          <div className="rounded-2xl border border-red-100 dark:border-red-900/40 bg-white dark:bg-[#181824] p-4.5 shadow-xs">
+            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
               <ShieldAlert size={15} /> Banned Users
             </div>
-            <p className="mt-2 text-2xl font-bold text-red-600 sm:text-3xl">{bannedCount}</p>
+            <p className="mt-2 text-2xl font-bold text-red-600 dark:text-red-400 sm:text-3xl">{bannedCount}</p>
           </div>
-          <div className="rounded-2xl border border-purple-100 bg-white p-4.5 shadow-xs">
-            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-purple-600">
+          <div className="rounded-2xl border border-purple-100 dark:border-purple-900/40 bg-white dark:bg-[#181824] p-4.5 shadow-xs">
+            <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
               <FolderTree size={15} /> Departments
             </div>
-            <p className="mt-2 text-2xl font-bold text-purple-900 sm:text-3xl">{departments.length}</p>
+            <p className="mt-2 text-2xl font-bold text-purple-900 dark:text-purple-300 sm:text-3xl">{departments.length}</p>
           </div>
         </div>
 
         {/* Filter Tabs & Search Controls */}
-        <div className="mt-7 flex flex-col gap-4 rounded-3xl border border-violet-100 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
+        <div className="mt-7 flex flex-col gap-4 rounded-3xl border border-violet-100 dark:border-gray-800 bg-white dark:bg-[#181824] p-5 shadow-sm md:flex-row md:items-center md:justify-between">
           {/* Tabs */}
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setActiveTab("all")}
-              className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+              className={`rounded-xl px-4 py-2 text-xs font-bold transition cursor-pointer ${
                 activeTab === "all"
                   ? "bg-violet-700 text-white shadow-xs"
-                  : "bg-slate-100 text-gray-700 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-[#12121A] border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-800"
               }`}
             >
               All Users ({users.length})
@@ -253,10 +253,10 @@ export default function AdminUsers() {
             <button
               type="button"
               onClick={() => setActiveTab("active")}
-              className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+              className={`rounded-xl px-4 py-2 text-xs font-bold transition cursor-pointer ${
                 activeTab === "active"
                   ? "bg-emerald-600 text-white shadow-xs"
-                  : "bg-slate-100 text-gray-700 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-[#12121A] border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-800"
               }`}
             >
               Active ({activeCount})
@@ -264,10 +264,10 @@ export default function AdminUsers() {
             <button
               type="button"
               onClick={() => setActiveTab("banned")}
-              className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+              className={`rounded-xl px-4 py-2 text-xs font-bold transition cursor-pointer ${
                 activeTab === "banned"
                   ? "bg-red-600 text-white shadow-xs"
-                  : "bg-slate-100 text-gray-700 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-[#12121A] border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-800"
               }`}
             >
               Banned ({bannedCount})
@@ -275,10 +275,10 @@ export default function AdminUsers() {
             <button
               type="button"
               onClick={() => setActiveTab("departments")}
-              className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+              className={`rounded-xl px-4 py-2 text-xs font-bold transition cursor-pointer ${
                 activeTab === "departments"
                   ? "bg-purple-700 text-white shadow-xs"
-                  : "bg-slate-100 text-gray-700 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-[#12121A] border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-800"
               }`}
             >
               By Department
@@ -297,14 +297,14 @@ export default function AdminUsers() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by #ID, name, email..."
-                className="w-full rounded-xl border border-gray-200 bg-slate-50 py-2 pl-9 pr-3 text-xs outline-none focus:border-violet-600 focus:bg-white"
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-slate-50 dark:bg-[#12121A] py-2 pl-9 pr-3 text-xs text-gray-900 dark:text-white outline-none focus:border-violet-600"
               />
             </div>
             {activeTab !== "departments" && (
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                className="rounded-xl border border-gray-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-gray-700 outline-none focus:border-violet-600"
+                className="rounded-xl border border-gray-200 dark:border-gray-700 bg-slate-50 dark:bg-[#12121A] px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 outline-none focus:border-violet-600"
               >
                 <option value="asc">Sort: #1 → Newest</option>
                 <option value="desc">Sort: Newest → #1</option>
