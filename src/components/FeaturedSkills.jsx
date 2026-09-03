@@ -1,7 +1,7 @@
 import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Star, Bookmark, Sparkles, ArrowRight } from "lucide-react";
+import { Bookmark, Sparkles, ArrowRight } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { FEATURED_SKILLS } from "../data/skills";
@@ -66,7 +66,6 @@ const FeaturedSkills = () => {
           const realLearners = dept?.learnerCount ?? 0;
           const realOffers = dept?.approvedSkillCount ?? 0;
           const learnerLabel = realLearners > 0 ? `${realLearners} Learners` : "0 Learners";
-          const ratingCount = realOffers * 12 + realLearners * 8 || 12;
 
           return (
             <Link
@@ -88,12 +87,8 @@ const FeaturedSkills = () => {
                   <span className="absolute top-3 right-3 bg-black/70 p-1.5 rounded-full text-white/90 border border-white/20">
                     <Bookmark size={14} />
                   </span>
-                  <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-sm font-semibold">
-                    <span className="flex items-center gap-1.5">
-                      <Star size={14} className="text-amber-400 fill-amber-400" /> {skill.rating}
-                      <span className="text-white/70 text-xs">({ratingCount})</span>
-                    </span>
-                    <span className="bg-violet-600 px-2.5 py-0.5 rounded-md text-xs font-bold">
+                  <div className="absolute bottom-2.5 right-3 flex items-center justify-end text-white text-sm font-semibold">
+                    <span className="bg-violet-600 px-2.5 py-0.5 rounded-md text-xs font-bold shadow-xs">
                       {realOffers} {realOffers === 1 ? "swap" : "swaps"}
                     </span>
                   </div>
