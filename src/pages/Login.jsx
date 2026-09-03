@@ -72,11 +72,6 @@ const Login = () => {
     }
   };
 
-  const fillDemoAccount = (email, password) => {
-    setFormData({ email, password });
-    setErrorMessage("");
-  };
-
   return (
     <div className="min-h-[calc(100vh-72px)] flex items-center justify-center bg-linear-to-br from-slate-50 via-purple-50/40 to-indigo-50/30 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl shadow-purple-900/10 border border-purple-100/80 overflow-hidden grid lg:grid-cols-12 min-h-[620px]">
@@ -227,27 +222,6 @@ const Login = () => {
               >
                 {submitting ? "Logging in..." : "Log In to Account"}
               </Button>
-
-              {/* Demo Account Fillers for Quick Testing */}
-              <div className="pt-2">
-                <p className="text-center text-xs text-gray-400 mb-2">Quick test login:</p>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => fillDemoAccount("annu@gmail.com", "Khwaab8485")}
-                    className="flex-1 py-1.5 px-3 rounded-lg border border-purple-200 bg-purple-50/50 hover:bg-purple-100 text-xs font-medium text-purple-700 transition text-center"
-                  >
-                    👑 Demo Admin
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => fillDemoAccount("aman@example.com", "Password123")}
-                    className="flex-1 py-1.5 px-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-xs font-medium text-gray-700 transition text-center"
-                  >
-                    👤 Demo User
-                  </button>
-                </div>
-              </div>
 
               <p className="text-center text-gray-600 text-sm pt-4 border-t border-gray-100">
                 Don't have an account yet?{" "}
