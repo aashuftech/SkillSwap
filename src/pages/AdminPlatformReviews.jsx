@@ -72,7 +72,7 @@ export default function AdminPlatformReviews() {
   const rejectedCount = reviews.filter((r) => r.status === "rejected").length;
 
   return (
-    <main className="min-h-screen bg-[#faf9ff] dark:bg-[#07070C] px-4 py-10 sm:px-7 transition-colors">
+    <main className="min-h-screen bg-[var(--jb-bg)] dark:bg-[#07070D] px-4 py-10 sm:px-7 transition-colors duration-300">
       <section className="mx-auto max-w-7xl">
         {/* Admin Header */}
         <div className="overflow-hidden rounded-3xl bg-linear-to-br from-[#170f24] via-[#211438] to-violet-900 px-6 py-9 text-white shadow-xl sm:px-10">

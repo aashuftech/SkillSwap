@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   useEffect(() => { loadData(); }, [loadData]);
 
   return (
-    <main className="min-h-screen bg-[#faf9ff] dark:bg-[#07070C] px-4 py-10 sm:px-7 transition-colors">
+    <main className="min-h-screen bg-[var(--jb-bg)] dark:bg-[#07070D] px-4 py-10 sm:px-7 transition-colors duration-300">
       <section className="mx-auto max-w-7xl">
         <div className="overflow-hidden rounded-3xl bg-linear-to-br from-[#170f24] via-[#211438] to-violet-900 px-6 py-9 text-white shadow-xl sm:px-10">
           <p className="text-xs font-bold uppercase tracking-[.22em] text-violet-300">SkillSwap command centre</p>

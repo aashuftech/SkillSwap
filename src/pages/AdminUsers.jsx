@@ -172,7 +172,7 @@ export default function AdminUsers() {
   const nonEmptyDepartments = departments.filter((dept) => dept.users.length > 0);
 
   return (
-    <main className="min-h-screen bg-[#faf9ff] px-4 py-10 sm:px-7">
+    <main className="min-h-screen bg-[var(--jb-bg)] dark:bg-[#07070D] px-4 py-10 sm:px-7 transition-colors duration-300">
       <section className="mx-auto max-w-7xl">
         {/* Top Header Card */}
         <div className="overflow-hidden rounded-3xl bg-linear-to-br from-[#170f24] via-[#211438] to-violet-900 px-6 py-9 text-white shadow-xl sm:px-10">
