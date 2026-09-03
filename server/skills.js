@@ -101,12 +101,22 @@ export function registerSkillRoutes(app) {
   });
 
   // ---- Member's own submissions (any status) ------------------------------
-  app.get("/api/skills/mine", auth, async (req, res, next) => {
+  const getMySkills = async (req, res, next) => {
     try {
-      const skills = await Skill.find({ user: req.auth.sub }).sort({ createdAt: -1 });
+      const userId = req.sessionUser?._id || req.auth?.sub;
+      const userEmail = req.sessionUser?.email || req.auth?.email;
+      const query = {
+        $or: [
+          { user: userId },
+          ...(userEmail ? [{ userEmail: userEmail.toLowerCase() }] : []),
+        ],
+      };
+      const skills = await Skill.find(query).sort({ createdAt: -1 });
       return res.json({ success: true, skills });
     } catch (error) { return next(error); }
-  });
+  };
+  app.get("/api/skills/mine", auth, getMySkills);
+  app.get("/api/users/skills", auth, getMySkills);
 
   // ---- Public browse / search: approved only, always -----------------------
   app.get("/api/skills", optionalAuth, async (req, res, next) => {
