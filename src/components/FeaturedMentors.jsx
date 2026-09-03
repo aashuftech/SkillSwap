@@ -1,3 +1,4 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Star, BadgeCheck, MessageCircle, ArrowLeftRight, Sparkles, ArrowRight, Loader2 } from "lucide-react";
@@ -5,7 +6,6 @@ import { Section, Button } from "./ui";
 
 import RibbonBackground from "./RibbonBackground";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const FeaturedMentors = () => {
   const [featuredSkills, setFeaturedSkills] = useState([]);

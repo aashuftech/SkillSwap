@@ -29,21 +29,12 @@ const jwtSecret = process.env.JWT_SECRET;
 if (!mongoUri) throw new Error("Missing MONGODB_URI or MONGO_URI in .env");
 if (!jwtSecret) throw new Error("Missing JWT_SECRET in .env");
 
-const configuredOrigins = (process.env.CLIENT_URL || "")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-// Vite changes its port when 5173 is already occupied. Allow local development
-// origins explicitly so a frontend on 5173/5174/etc. can reach this API.
-function allowOrigin(origin, callback) {
-  if (!origin) return callback(null, true);
-  const isLocalVite = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-  if (isLocalVite || configuredOrigins.includes(origin)) return callback(null, true);
-  return callback(new Error(`CORS blocked origin: ${origin}`));
-}
-
-app.use(cors({ origin: allowOrigin, credentials: false }));
+app.use(
+  cors({
+    origin: true,
+    credentials: false,
+  })
+);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 registerAdminAiRoutes(app);
@@ -524,12 +515,30 @@ app.post("/api/loginuser", async (req, res, next) => {
   } catch (error) { return next(error); }
 });
 
-app.use((error, _req, res, _next) => { console.error(error); return res.status(500).json({ success: false, message: error.message || "Server error." }); });
+// Serve production frontend if dist exists (Fullstack deployment)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, "..", "dist");
+
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.use((req, res, next) => {
+    if (req.method !== "GET" || req.path.startsWith("/api") || req.path.startsWith("/socket.io")) {
+      return next();
+    }
+    return res.sendFile(path.join(distPath, "index.html"));
+  });
+}
+
+app.use((error, _req, res, _next) => {
+  console.error(error);
+  return res.status(500).json({ success: false, message: error.message || "Server error." });
+});
 
 const httpServer = http.createServer(app);
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: allowOrigin,
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: false,
   },
@@ -691,21 +700,6 @@ io.on("connection", (socket) => {
     socketToKeys.delete(socket.id);
   });
 });
-
-// Serve production frontend if dist exists (Fullstack deployment)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const distPath = path.join(__dirname, "..", "dist");
-
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
-  app.use((req, res, next) => {
-    if (req.method !== "GET" || req.path.startsWith("/api") || req.path.startsWith("/socket.io")) {
-      return next();
-    }
-    return res.sendFile(path.join(distPath, "index.html"));
-  });
-}
 
 async function startServer() {
   await mongoose.connect(mongoUri);

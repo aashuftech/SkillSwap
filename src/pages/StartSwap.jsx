@@ -1,3 +1,4 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, ArrowLeftRight, MessageCircle, PlusCircle, SearchX, Sparkles, Loader2, Zap, CheckCircle2, Star } from "lucide-react";
@@ -8,7 +9,6 @@ import { Button, Badge } from "../components/ui";
 import { aiHeaders, getAiVisitorId } from "../lib/aiVisitor";
 import RibbonBackground from "../components/RibbonBackground";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const StartSwap = () => {
   useEffect(() => {

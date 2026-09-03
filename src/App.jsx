@@ -40,8 +40,7 @@ import { VideoCallProvider } from "./context/VideoCallContext";
 import IncomingCallModal from "./components/chat/IncomingCallModal";
 import VideoCallModal from "./components/chat/VideoCallModal";
 import ReviewPlatformCTA from "./components/ReviewPlatformCTA";
-
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+import { API } from "./lib/apiConfig.js";
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem("authToken");

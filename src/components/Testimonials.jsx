@@ -1,9 +1,9 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { MessageSquareQuote, Star, Sparkles } from "lucide-react";
 import { Section, SectionHeading, Card } from "./ui";
 import ReviewPlatformModal from "./ReviewPlatformModal";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const Testimonials = () => {
   const [reviews, setReviews] = useState([]);

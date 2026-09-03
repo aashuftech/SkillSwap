@@ -1,8 +1,8 @@
+import { API } from "../lib/apiConfig.js";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Loader2, MapPin, Sparkles, Star } from "lucide-react";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 export default function PublicProfile() {
   const { id } = useParams();

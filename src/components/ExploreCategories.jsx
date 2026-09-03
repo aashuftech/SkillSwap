@@ -1,10 +1,10 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Code, Smartphone, Palette, PenTool, FileText, Search, Megaphone, Database, Video, Globe2, Music2, Layers } from "lucide-react";
 import { Section } from "./ui";
 import RibbonBackground from "./RibbonBackground";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const CATEGORIES = [
   { name: "Web Development", icon: Code, path: "/web-development" },

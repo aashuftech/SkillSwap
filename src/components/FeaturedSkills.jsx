@@ -1,3 +1,4 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Star, Bookmark, Sparkles, ArrowRight } from "lucide-react";
@@ -7,7 +8,6 @@ import { FEATURED_SKILLS } from "../data/skills";
 import { Section } from "./ui";
 import RibbonBackground from "./RibbonBackground";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const FeaturedSkills = () => {
   const [departments, setDepartments] = useState([]);

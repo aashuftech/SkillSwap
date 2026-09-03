@@ -1,3 +1,4 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,7 +13,6 @@ import {
 import { Button } from "./ui";
 import RibbonBackground from "./RibbonBackground";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const CATEGORIES = [
   "All Categories",

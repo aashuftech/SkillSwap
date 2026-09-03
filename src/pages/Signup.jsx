@@ -1,3 +1,4 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail, User, MapPin, Eye, EyeOff, Sparkles, ShieldCheck, CheckCircle2, Award, Zap } from "lucide-react";
@@ -5,7 +6,6 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { Button, FloatingInput } from "../components/ui";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 const SIGNUP_IMAGE = "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1000&q=80";
 
 const Signup = () => {

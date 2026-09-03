@@ -1,8 +1,8 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { formatStatsList, HOME_STATS } from "../data/stats";
 import CountUp from "./CountUp";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const Stats = () => {
   const [statsList, setStatsList] = useState(HOME_STATS);

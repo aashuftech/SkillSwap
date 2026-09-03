@@ -1,3 +1,4 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { Check, ShieldCheck, Sparkles, Loader2, CheckCircle2 } from "lucide-react";
 import AOS from "aos";
@@ -6,7 +7,6 @@ import { PRICING_PLANS } from "../data/plans";
 import { Card, Badge, Button, SectionHeading } from "../components/ui";
 import RibbonBackground from "../components/RibbonBackground";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const loadRazorpayScript = () =>
   new Promise((resolve) => {

@@ -1,9 +1,9 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useState, useEffect } from "react";
 import { Star, X, CheckCircle2, Loader2, Sparkles, MessageSquareHeart, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 import { authFetch } from "../lib/authFetch";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 export default function ReviewPlatformModal({ isOpen, onClose, onReviewSubmitted }) {
   const [rating, setRating] = useState(5);

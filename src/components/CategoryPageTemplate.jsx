@@ -1,9 +1,9 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, Star, MessageCircle, ArrowLeftRight, Users, PlusCircle, Sparkles, MapPin } from "lucide-react";
 import { Card, Badge, Button, Section, SectionHeading } from "./ui";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 // Tailwind's JIT scanner needs full literal class strings somewhere in
 // the source — it can't resolve `bg-${accent}-600` at runtime — so

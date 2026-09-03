@@ -1,8 +1,9 @@
+import { API } from "../lib/apiConfig.js";
 import { useEffect, useRef, useState } from "react";
 import { Bot, Loader2, Send, Trash2, X, Sparkles } from "lucide-react";
 import { aiHeaders, getAiVisitorId } from "../lib/aiVisitor";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+
 const welcome = {
   role: "assistant",
   content: "Hi! Main SkillSwap AI Assistant hoon 🤖. Aap Hindi, English ya Hinglish mein skills explore karne, skill request banane ya platform guide ke baare mein pooch sakte hain!",

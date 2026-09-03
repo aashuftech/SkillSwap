@@ -1,3 +1,4 @@
+import { API } from "../lib/apiConfig.js";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Quote } from "lucide-react";
@@ -12,7 +13,6 @@ import CountUp from "../components/CountUp";
 import CTABanner from "../components/CTABanner";
 import RibbonBackground from "../components/RibbonBackground";
 
-const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 const STORY_IMAGE =
   "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80";
