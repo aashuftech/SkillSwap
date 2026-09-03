@@ -1,5 +1,8 @@
 import "dotenv/config";
 import http from "http";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 import { Server as SocketIOServer } from "socket.io";
 import bcrypt from "bcryptjs";
 import cors from "cors";
@@ -688,6 +691,21 @@ io.on("connection", (socket) => {
     socketToKeys.delete(socket.id);
   });
 });
+
+// Serve production frontend if dist exists (Fullstack deployment)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, "..", "dist");
+
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/socket.io")) {
+      return next();
+    }
+    return res.sendFile(path.join(distPath, "index.html"));
+  });
+}
 
 async function startServer() {
   await mongoose.connect(mongoUri);
