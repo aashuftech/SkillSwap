@@ -9,23 +9,35 @@ import {
   Loader2,
   Filter,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { authFetch } from "../lib/authFetch";
+
+const safeParseJson = async (response) => {
+  try {
+    const text = await response.text();
+    return JSON.parse(text);
+  } catch {
+    return { success: false, message: "Server returned an invalid response." };
+  }
+};
 
 export default function AdminPlatformReviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [filter, setFilter] = useState("all");
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const loadReviews = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
       const response = await authFetch("/api/admin/platform-reviews");
-      const data = await response.json();
+      const data = await safeParseJson(response);
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Failed to load platform reviews.");
       }
@@ -43,41 +55,51 @@ export default function AdminPlatformReviews() {
 
   const updateReviewStatus = async (id, status) => {
     setActionLoadingId(id);
+    setError("");
+    setSuccessMsg("");
     try {
       const response = await authFetch(`/api/admin/platform-reviews/${id}`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
       });
-      const data = await response.json();
+      const data = await safeParseJson(response);
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Failed to update review status.");
       }
 
       setReviews((prev) =>
-        prev.map((r) => (r._id === id ? { ...r, status, approvedBy: data.review?.approvedBy, approvedAt: data.review?.approvedAt } : r))
+        prev.map((r) =>
+          r._id === id
+            ? { ...r, status, approvedBy: data.review?.approvedBy, approvedAt: data.review?.approvedAt }
+            : r
+        )
       );
+      setSuccessMsg(`Review status updated to ${status}.`);
     } catch (err) {
-      alert(err.message || "Could not update status.");
+      setError(err.message || "Could not update status.");
     } finally {
       setActionLoadingId(null);
     }
   };
 
-  const deleteReview = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this platform review permanently?")) return;
+  const confirmDelete = async (id) => {
     setActionLoadingId(id);
+    setError("");
+    setSuccessMsg("");
     try {
       const response = await authFetch(`/api/admin/platform-reviews/${id}`, {
         method: "DELETE",
       });
-      const data = await response.json();
+      const data = await safeParseJson(response);
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Failed to delete review.");
       }
 
       setReviews((prev) => prev.filter((r) => r._id !== id));
+      setSuccessMsg("Platform review deleted permanently.");
+      setDeleteTarget(null);
     } catch (err) {
-      alert(err.message || "Could not delete review.");
+      setError(err.message || "Could not delete review.");
     } finally {
       setActionLoadingId(null);
     }
@@ -121,9 +143,22 @@ export default function AdminPlatformReviews() {
           <AdminNav />
         </div>
 
+        {/* Banners */}
+        {successMsg && (
+          <div className="mt-6 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 p-4 text-sm text-emerald-800 dark:text-emerald-300 flex items-center justify-between shadow-xs">
+            <span><b>Success:</b> {successMsg}</span>
+            <button onClick={() => setSuccessMsg("")} className="text-emerald-700 dark:text-emerald-300 font-bold text-xs hover:underline cursor-pointer">
+              Dismiss
+            </button>
+          </div>
+        )}
+
         {error && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            <b>Error:</b> {error}
+          <div className="mt-6 rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-4 text-sm text-red-800 dark:text-red-300 flex items-center justify-between shadow-xs">
+            <span><b>Error:</b> {error}</span>
+            <button onClick={() => setError("")} className="text-red-700 dark:text-red-300 font-bold text-xs hover:underline cursor-pointer">
+              Dismiss
+            </button>
           </div>
         )}
 
@@ -292,7 +327,7 @@ export default function AdminPlatformReviews() {
                     <button
                       type="button"
                       disabled={isActionLoading}
-                      onClick={() => deleteReview(r._id)}
+                      onClick={() => setDeleteTarget(r)}
                       className="flex-1 md:w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 font-bold text-xs py-2 px-3 transition disabled:opacity-50 cursor-pointer"
                       title="Delete Review"
                     >
@@ -304,6 +339,57 @@ export default function AdminPlatformReviews() {
             })
           )}
         </div>
+
+        {/* Delete Confirmation In-App Modal */}
+        {deleteTarget && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+            <div className="w-full max-w-md rounded-3xl bg-white dark:bg-[#181824] p-6 shadow-2xl border border-gray-200 dark:border-gray-800 animate-in fade-in duration-200">
+              <div className="flex items-center gap-3.5 mb-4">
+                <div className="w-11 h-11 rounded-2xl bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
+                  <AlertTriangle size={22} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-lg">Delete Platform Review</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Permanently removes this testimonial.</p>
+                </div>
+              </div>
+
+              <div className="text-sm text-gray-700 dark:text-gray-300 mb-6 bg-gray-50 dark:bg-[#12121A] p-4 rounded-2xl border border-gray-100 dark:border-gray-800/80">
+                <p className="mb-2 font-semibold">Are you sure you want to delete this review?</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Author: <span className="font-bold text-gray-800 dark:text-gray-200">{deleteTarget.userName}</span>
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1 italic">
+                  "{deleteTarget.reviewText}"
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  disabled={actionLoadingId === deleteTarget._id}
+                  onClick={() => setDeleteTarget(null)}
+                  className="rounded-xl px-4 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={actionLoadingId === deleteTarget._id}
+                  onClick={() => confirmDelete(deleteTarget._id)}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-5 py-2.5 shadow-md transition disabled:opacity-50 cursor-pointer"
+                >
+                  {actionLoadingId === deleteTarget._id ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={14} />
+                  )}
+                  Delete Permanently
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </main>
   );
