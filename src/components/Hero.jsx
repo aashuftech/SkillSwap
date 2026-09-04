@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import { API } from "../lib/apiConfig.js";
+import React, { useEffect, useState } from "react";
 import { Sparkles, ArrowRight } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Badge, Button } from "./ui";
 import RibbonBackground from "./RibbonBackground";
+import CountUp from "./CountUp";
 
 const HERO_PHOTO = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80";
 
@@ -14,8 +16,18 @@ const AVATAR_STACK = [
 ];
 
 const Hero = () => {
+  const [activeMembers, setActiveMembers] = useState(null);
+
   useEffect(() => {
     AOS.init({ duration: 1000, easing: "ease-in-out", once: true });
+    fetch(`${API}/api/stats`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.stats && typeof data.stats.activeMembers === "number") {
+          setActiveMembers(data.stats.activeMembers);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -59,7 +71,15 @@ const Hero = () => {
               ))}
             </div>
             <div>
-              <p className="font-bold text-sm text-gray-900 dark:text-white">10K+ Members</p>
+              <p className="font-bold text-sm text-gray-900 dark:text-white">
+                {activeMembers !== null ? (
+                  <>
+                    <CountUp value={activeMembers} /> {activeMembers === 1 ? "Member" : "Members"}
+                  </>
+                ) : (
+                  "Members"
+                )}
+              </p>
               <p className="text-xs text-gray-500 dark:text-gray-400">Active Skill Swappers</p>
             </div>
           </div>
