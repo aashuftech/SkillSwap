@@ -36,6 +36,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminSkillReview from "./pages/AdminSkillReview";
 import AdminPlatformReviews from "./pages/AdminPlatformReviews";
 import PublicProfile from "./pages/PublicProfile";
+import PlatformReviewsPage from "./pages/PlatformReviewsPage";
 import { VideoCallProvider } from "./context/VideoCallContext";
 import IncomingCallModal from "./components/chat/IncomingCallModal";
 import VideoCallModal from "./components/chat/VideoCallModal";
@@ -157,6 +158,7 @@ function AnimatedRoutes() {
         <Route path="/category/:slug" element={<DynamicCategoryPage />} />
 
         {/* Other Pages */}
+        <Route path="/platform-reviews" element={<PlatformReviewsPage />} />
         <Route path="/community" element={<Community />} />
         <Route path="/collaboration" element={<Collaboration />} />
         <Route path="/growth" element={<Growth />} />

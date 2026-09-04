@@ -8,6 +8,7 @@ import {
   RefreshCw,
   Loader2,
   Filter,
+  Trash2,
 } from "lucide-react";
 import AdminNav from "../components/AdminNav";
 import { authFetch } from "../lib/authFetch";
@@ -57,6 +58,26 @@ export default function AdminPlatformReviews() {
       );
     } catch (err) {
       alert(err.message || "Could not update status.");
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const deleteReview = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this platform review permanently?")) return;
+    setActionLoadingId(id);
+    try {
+      const response = await authFetch(`/api/admin/platform-reviews/${id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to delete review.");
+      }
+
+      setReviews((prev) => prev.filter((r) => r._id !== id));
+    } catch (err) {
+      alert(err.message || "Could not delete review.");
     } finally {
       setActionLoadingId(null);
     }
@@ -262,11 +283,21 @@ export default function AdminPlatformReviews() {
                         type="button"
                         disabled={isActionLoading}
                         onClick={() => updateReviewStatus(r._id, "pending")}
-                        className="flex-1 md:w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold text-xs py-2.5 px-4 transition disabled:opacity-50 cursor-pointer"
+                        className="flex-1 md:w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold text-xs py-2 px-3 transition disabled:opacity-50 cursor-pointer"
                       >
-                        <Clock size={15} /> Set Pending
+                        <Clock size={14} /> Set Pending
                       </button>
                     )}
+
+                    <button
+                      type="button"
+                      disabled={isActionLoading}
+                      onClick={() => deleteReview(r._id)}
+                      className="flex-1 md:w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/60 font-bold text-xs py-2 px-3 transition disabled:opacity-50 cursor-pointer"
+                      title="Delete Review"
+                    >
+                      <Trash2 size={14} /> Delete
+                    </button>
                   </div>
                 </div>
               );

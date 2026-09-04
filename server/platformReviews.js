@@ -138,4 +138,20 @@ export function registerPlatformReviewRoutes(app) {
       return next(error);
     }
   });
+
+  // ---- Admin Only: Delete a platform review ----
+  app.delete("/api/admin/platform-reviews/:id", auth, adminOnly, async (req, res, next) => {
+    try {
+      const review = await PlatformReview.findByIdAndDelete(req.params.id);
+      if (!review) {
+        return res.status(404).json({ success: false, message: "Review not found." });
+      }
+      return res.json({
+        success: true,
+        message: "Platform review deleted successfully.",
+      });
+    } catch (error) {
+      return next(error);
+    }
+  });
 }
