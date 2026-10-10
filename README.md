@@ -1,86 +1,177 @@
 # SkillSwap
 
-SkillSwap is a React frontend with an Express and MongoDB authentication API.
+SkillSwap is a skill-exchange platform where users can connect with others, exchange skills, chat, and communicate through video calls. It also includes payment integration and AI-assisted skill matching to help users find relevant learning partners.
+
+## Screenshots and demo
+
+Add verified app screenshots and a working live demo link here when they are ready.
+
+- **Live Demo:** Add your deployed URL
+- **GitHub Repository:** https://github.com/aashuftech/SkillSwap
+
+## Features
+
+- User authentication and profile management.
+- Add and manage skills you can teach and want to learn.
+- Find potential learning partners based on skill similarity.
+- AI-assisted skill matching using TF-IDF and cosine similarity.
+- Chat with other users through the platform.
+- Real-time video calls using WebRTC.
+- Socket.IO signaling for call requests, acceptance, rejection, and connection setup.
+- Razorpay payment gateway integration.
+- Responsive interface for different screen sizes.
+
+## How skill matching works
+
+1. Users provide information about the skills they can teach and want to learn.
+2. The matching system processes the skill information into text features.
+3. TF-IDF converts the text into numerical representations.
+4. Cosine similarity compares the representations to estimate how closely two users' skills match.
+5. The system uses the similarity results to help identify relevant learning partners.
+
+The matching score is an estimate of text similarity. It does not guarantee that two users will be a perfect learning match.
+
+## How video calling works
+
+1. A user starts a video call from the platform.
+2. Socket.IO sends the call request to the other user's connected browser.
+3. The receiving user can accept or reject the call.
+4. When the call is accepted, WebRTC exchanges connection information through Socket.IO.
+5. Both browsers exchange ICE candidates to discover a suitable network path.
+6. WebRTC establishes the media connection and streams audio and video between the participants.
+7. When the call ends, the application closes the peer connection and stops the local media tracks.
+
+Socket.IO handles signaling and call-related events. WebRTC handles the actual audio and video communication. A TURN server may be required on networks where a direct peer-to-peer connection cannot be established.
+
+## How payments work
+
+1. A user selects a paid plan or payment option.
+2. The frontend sends an order-creation request to the backend.
+3. The backend converts the amount from rupees to paise and requests an order from Razorpay.
+4. The frontend uses the returned order information to open Razorpay Checkout.
+5. After checkout, the payment response is sent to the backend for verification.
+
+**Important:** The current payment verification endpoint needs proper Razorpay signature verification before the application can safely treat a payment as successful. Production use also requires server-side payment confirmation and reliable storage of payment and plan-activation records.
+
+## Built with
+
+- **React** — builds the frontend pages and interactive components.
+- **JavaScript** — implements frontend and backend application logic.
+- **Node.js and Express** — provide the backend server and REST APIs.
+- **MongoDB and Mongoose** — store application data.
+- **Socket.IO** — handles real-time events and WebRTC signaling.
+- **WebRTC** — enables browser-based audio and video calls.
+- **Razorpay** — integrates online payments.
+- **TF-IDF and cosine similarity** — support text-based skill matching.
+- **HTML and CSS** — structure and style the user interface.
+- **Vite** — runs and builds the frontend, if used in the current setup.
+
+## Project structure
+
+```text
+SkillSwap/
+├── src/
+│   ├── components/    Reusable UI components
+│   ├── pages/         Application pages
+│   ├── context/       Shared application and call state
+│   └── lib/           API and Socket.IO utilities
+│
+├── server/
+│   └── server.js      Express API and Socket.IO server
+│
+├── public/            Static assets
+├── package.json       Frontend dependencies and scripts
+└── README.md
+```
+
+The exact folders may differ depending on the current repository structure.
 
 ## Run locally
 
-1. Copy `.env.example` to `.env` and set `MONGODB_URI` and `JWT_SECRET`. Do not use a `VITE_` prefix for these backend variables.
-2. Install packages with `npm install`.
-3. In one terminal, start the API: `npm run server`.
-4. In a second terminal, start the frontend: `npm run dev`.
+You will need Node.js, npm, and access to a MongoDB database.
 
-The frontend must use `VITE_API_BASE_URL=http://localhost:4000`. A successful signup stores the user in the MongoDB `users` collection with a bcrypt-hashed password; login validates that password and returns a 7-day JWT.
+### 1. Clone the repository
 
-## Admin panel & skill moderation
+```bash
+git clone https://github.com/aashuftech/SkillSwap.git
+cd SkillSwap
+```
 
-Log in as the account listed in `ADMIN_EMAIL`/`ADMIN_EMAILS` and open `/admin`.
+### 2. Install dependencies
 
-- **`/admin`** — dashboard: total users, pending/approved/rejected skills, departments.
-- **`/admin/users`** — members grouped by department (derived from their most
-  recently *approved* taught skill, never from what they want to learn).
-  Each card has View (opens their public profile) and Delete.
-- **`/admin/skills`** — moderation queue: user, skill, description, AI
-  recommendation/category/reason/confidence, plus Approve / Reject / Delete.
-  Only an admin decision publishes or rejects a skill — the AI only advises.
+Install the frontend dependencies:
 
-**Flow:** a member submits a skill on `/add-skills` → the server retrieves
-relevant chunks from a knowledge base (`server/knowledgeBase.js`) with a
-real TF-IDF/cosine-similarity retriever (`server/rag.js`, no static/fake
-context) → the retrieved context plus the skill are sent to Groq
-(`openai/gpt-oss-120b`, `server/skillReview.js`) for a recommendation →
-the skill is stored as `pending` regardless of the AI's verdict → an admin
-makes the final approve/reject call in `/admin/skills`. Only `approved`
-skills are ever returned by the public `/api/skills`, `/api/departments`,
-and `/api/users/:id/profile` endpoints.
+```bash
+npm install
+```
 
-Requires `GROQ_API_KEY` in the backend `.env` (already present in this
-project). The skill-review pipeline always tries `openai/gpt-oss-120b`
-first, independent of the `GROQ_MODEL` env var used by the existing AI
-chat feature.
+If the `server` directory contains its own `package.json`, install backend dependencies separately:
 
-## Admin role, user IDs, and bans
+```bash
+npm --prefix server install
+```
 
-- **Admin role** is never read from a stored field. `server/authMiddleware.js`
-  computes it fresh on every signup, login, and authenticated request from
-  `ADMIN_EMAIL`/`ADMIN_EMAILS` in `.env`. No signup can ever grant itself
-  admin, and changing `ADMIN_EMAILS` takes effect immediately on the next
-  request — no stale token or DB row can keep someone admin (or lock them
-  out) after that.
-- **Sequential user IDs** (`#1`, `#2`, ...) are assigned atomically at
-  signup via `server/models/Counter.js` and shown on every user card in
-  `/admin/users`. Deleting a user never frees their number for reuse.
-  Existing accounts are backfilled once at server startup, oldest first.
-- **Bans**: an admin can ban/unban from `/admin/users` (card button) or the
-  user detail modal. A banned account cannot log in, and if it's already
-  logged in it is force-logged-out — every authenticated backend request
-  re-checks ban status (`server/authMiddleware.js`), and the frontend
-  polls `/api/auth/me` every 15s while logged in to catch an idle banned
-  session promptly.
-- **Clicking a user** in `/admin/users` opens a detail modal
-  (`AdminUserDetailModal.jsx`) showing every skill they've submitted, its
-  status, and — separately — what they want to *learn* in return, pulled
-  from `GET /api/admin/users/:id`.
+### 3. Configure environment variables
 
-## AI chat history
+Create the environment files required by the frontend and backend, based on the project's existing examples or configuration.
 
-"Clear chat" in the floating widget now calls `DELETE /api/ai/conversation`,
-which empties the conversation's `messages` array in MongoDB. Previously it
-only cleared the on-screen state, so the same history reappeared on the next
-login — that's fixed.
+Typical backend settings may include:
 
-## Existing Vite notes
+```env
+PORT=4000
+MONGODB_URI=your_mongodb_connection_string
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+```
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Use the actual environment variable names expected by the source code. Keep secrets private and never commit real credentials.
 
-Currently, two official plugins are available:
+If the frontend uses a configurable backend URL, set the corresponding `VITE_` variable according to the project's API configuration.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 4. Start the backend
 
-## React Compiler
+Run the backend command defined in its `package.json`. For example, if a development script exists:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm --prefix server run dev
+```
 
-## Expanding the ESLint configuration
+Otherwise, use the actual start command configured by the project.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 5. Start the frontend
+
+In another terminal:
+
+```bash
+npm run dev
+```
+
+Open the local URL printed by Vite.
+
+Make sure MongoDB is reachable and the frontend API URL points to the running backend.
+
+## Deployment
+
+The project has been deployed using AWS infrastructure for the backend and a frontend hosting service, depending on the current deployment configuration.
+
+Before publishing this section, add the verified frontend URL, backend URL, hosting details, and deployment instructions. Never include private server credentials or secret keys in the README.
+
+## Security and privacy
+
+- Keep database credentials and Razorpay secrets on the backend.
+- Validate user input on the server.
+- Protect private API routes with authentication and authorization.
+- Verify Razorpay payment signatures on the backend before activating paid features.
+- Use HTTPS in production.
+- Configure Socket.IO CORS and allowed frontend origins appropriately.
+- Ensure users can only access conversations and call-related actions they are authorized to use.
+- Request camera and microphone permissions before starting a video call.
+- Stop media tracks and close peer connections when calls end.
+
+## Known limitations
+
+- Skill matching depends on the quality and wording of user-provided skill information.
+- Video calling depends on browser permissions and network connectivity.
+- Direct WebRTC connections may fail on restrictive networks without a TURN server.
+- Payment verification and persistent plan activation require secure server-side implementation.
+- Add verified screenshots, a working public demo, and confirmed setup instructions before presenting the repository as a complete production deployment.
