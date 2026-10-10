@@ -2,13 +2,6 @@
 
 SkillSwap is a skill-exchange platform where users can connect with others, exchange skills, chat, and communicate through video calls. It also includes payment integration and AI-assisted skill matching to help users find relevant learning partners.
 
-## Screenshots and demo
-
-Add verified app screenshots and a working live demo link here when they are ready.
-
-- **Live Demo:** Add your deployed URL
-- **GitHub Repository:** https://github.com/aashuftech/SkillSwap
-
 ## Features
 
 - User authentication and profile management.
